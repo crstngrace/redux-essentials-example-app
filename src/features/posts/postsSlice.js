@@ -111,5 +111,6 @@ export const selectPostsByUser = createSelector(
   (posts, userId) => posts.filter((post) => post.user === userId)
 )
 
+console.log('postsSlice', postsSlice)
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions
 export default postsSlice.reducer

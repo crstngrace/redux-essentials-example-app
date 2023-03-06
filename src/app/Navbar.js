@@ -1,14 +1,27 @@
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  fetchNotifications,
-  selectAllNotifications,
+  fetchNotificationsWebsocket,
+  selectNotificationsMetadata,
+  useGetNotificationsQuery,
 } from '../features/notifications/notificationsSlice'
 
 const Navbar = () => {
   const dispatch = useDispatch()
-  const notifications = useSelector(selectAllNotifications)
-  const numUnreadNotifications = notifications.filter((n) => n.isNew).length
+  // const notifications = useSelector(selectAllNotifications)
+  // const numUnreadNotifications = notifications.filter((n) => n.isNew).length
+
+  // Trigger initial fetch of notifications and keep the websocket open to receive updates
+  useGetNotificationsQuery()
+
+  const notificationsMetadata = useSelector(selectNotificationsMetadata)
+  const numUnreadNotifications = notificationsMetadata.filter(
+    (n) => !n.read
+  ).length
+
+  const fetchNewNotifications = () => {
+    dispatch(fetchNotificationsWebsocket())
+  }
   let unreadNotificationBadge
 
   if (numUnreadNotifications > 0) {
@@ -17,9 +30,9 @@ const Navbar = () => {
     )
   }
 
-  const fetchNewNotifications = () => {
-    dispatch(fetchNotifications())
-  }
+  // const fetchNewNotifications = () => {
+  //   dispatch(fetchNotifications())
+  // }
 
   return (
     <nav>
